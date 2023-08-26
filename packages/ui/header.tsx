@@ -7,7 +7,11 @@ import { useRouter } from "next/navigation";
 
 export function Header({ text }: { text: string }): JSX.Element {
   const router = useRouter();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({
+    email: "",
+    username: "",
+    _id: "",
+  });
   const logout = async () => {
     try {
       await axios.get("/api/users/logout");
@@ -25,7 +29,7 @@ export function Header({ text }: { text: string }): JSX.Element {
 
   useEffect(() => {
     getUserDetails();
-  });
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
