@@ -10,7 +10,7 @@ export async function GET(request, { params }) {
     const client = await clientPromise;
     const db = client.db("calendarapp");
 
-    const users = await db.collection("users").find({}).limit(10).toArray();
+    const users = await db.collection("users").find({}).limit(1).toArray();
 
     return NextResponse.json({ users });
   } catch (e) {
