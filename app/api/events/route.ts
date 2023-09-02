@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     console.log("POST");
-    const userId = await getDataFromToken(request);
+    const userId = await getDataFromToken(request); //"64e94bc362ff0d1bba506006"; //await getDataFromToken(request);
     console.log(userId);
     const reqBody = await request.json();
     console.log(reqBody);

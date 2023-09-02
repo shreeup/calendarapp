@@ -38,7 +38,10 @@ export function getErrorResponse(
 
 export const getDataFromToken = (request: NextRequest) => {
   try {
-    const token = request.cookies.get("authtoken")?.value || "";
+    const token =
+      request.cookies.get("authtoken")?.value ||
+      request.headers.get("authorization")?.value ||
+      "";
     const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY!);
     return decodedToken.id;
   } catch (error: any) {

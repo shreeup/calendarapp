@@ -1,39 +1,28 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { redirect } from "next/navigation";
 
-// we are not exporting by default
-// export async function middleware(req, ev) {
-//   const token = req ? req.cookies?.token : null;
-//   const profile = await getProfile(token);
-//   // if profile exists you want to continue. Also
-//   // maybe user sends request for log-in, and if a user wants to login, obviously it has no token
-//   const { pathname } = req.nextUrl;
-//   if (
-//     // whatever your api route for login is
-//     pathname.includes("/api/login") ||
-//     profile
-//   ) {
-//     return NextResponse.next();
-//   }
-
-//   if (!profile && pathname !== "/login") {
-//     // since you want to redirect the user to "/"
-//     return NextResponse.redirect("/");
-//   }
-// }
+// Limit the middleware to paths starting with `/api/`
+export const config = {
+  matcher: "/api/:function*",
+};
 
 export function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
-
-  const isPublicPath =
-    path === "/login" || path === "/signup" || path === "/verifyemail";
-
-  const token = request.cookies.get("token")?.value || "";
-
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL("/", request.nextUrl));
-  }
-
-  if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl));
-  }
+  // Call our authentication function to check the request
+  //   let isAuthenticated =
+  //     request.cookies.get("authtoken")?.value ||
+  //     request.headers.get("authorization")?.value ||
+  //     "";
+  //   if (!isAuthenticated) {
+  //     // Respond with JSON indicating an error message
+  //     // return new NextResponse(
+  //     //   JSON.stringify({ success: false, message: "authentication failed" }),
+  //     //   { status: 401, headers: { "content-type": "application/json" } }
+  //     // );
+  //     //return NextResponse.redirect(new URL("/login", request.url));
+  //     response.writeHead(302, {
+  //       Location: "/login",
+  //     });
+  //     response.end();
+  //   }
 }
