@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import moment from "moment";
 import axios from "axios";
-export interface EventState {
+export type EventState = {
   activeEvent: EventDetail;
   modalOpen: boolean;
-}
+};
 
 export interface EventDetail {
   _id: string;

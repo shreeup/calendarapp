@@ -40,7 +40,7 @@ export const getDataFromToken = (request: NextRequest) => {
   try {
     const token =
       request.cookies.get("authtoken")?.value ||
-      request.headers.get("authorization")?.value ||
+      request.headers.get("authorization") ||
       "";
     const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY!);
     return decodedToken.id;
@@ -58,7 +58,7 @@ export async function connect() {
       console.log("MongoDB connected successfully");
     });
 
-    connection.on("error", (err) => {
+    connection.on("error", (err: any) => {
       console.log(
         "MongoDB connection error. Please make sure MongoDB is running. " + err
       );
@@ -70,6 +70,6 @@ export async function connect() {
   }
 }
 
-export const getDateFromStr = (datestr: string): moment.Moment => {
-  return moment(datestr).format("YYYY-MM-DD");
+export const getDateFromStr = (datestr: string): any => {
+  return (moment as any)(datestr).format("YYYY-MM-DD");
 };

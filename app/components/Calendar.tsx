@@ -24,11 +24,10 @@ const localizer = momentLocalizer(moment); // or globalizeLocalizer
 
 export default function MyCalendar() {
   const dispatch = useDispatch();
-
   //const [events, setEvents] = React.useState([]);
   //const { events, eventfetchstatus } = useQuery("events", fetchEvents);
-
-  const [selectedEvent, setSelectedEvent] = useState(undefined);
+  let currstate = useSelector((state: RootState) => state);
+  const [selectedEvent, setSelectedEvent] = useState({});
 
   //   useEffect(() => {
   //     const fetchdata = async () => {
@@ -40,12 +39,12 @@ export default function MyCalendar() {
   //     });
   //   }, []);
 
-  const handleSelectedEvent = (event: EventState) => {
+  const handleSelectedEvent = (event: typeof EventState) => {
     debugger;
     setSelectedEvent(event);
     //setModalState(true);
     dispatch(setActiveEvent(event));
-    dispatch(openmodal());
+    dispatch(openmodal(currstate));
   };
 
   //   const onSelectSlot = (e: Event & { target: Element }) => {
@@ -64,7 +63,7 @@ export default function MyCalendar() {
   //   };
 
   const handleDoubleClick = (e: any) => {
-    dispatch(openmodal());
+    dispatch(openmodal(currstate));
   };
   const handleSelectSlot = useCallback(({ start, end }: any) => {
     dispatch(
@@ -75,17 +74,21 @@ export default function MyCalendar() {
         end: new Date(),
       })
     );
-    dispatch(openmodal());
+    dispatch(openmodal(currstate));
   }, []);
 
-  const { isLoading, error, events } = useQuery({
+  const {
+    isLoading,
+    error,
+    data: events,
+  } = useQuery({
     queryKey: ["data"],
     queryFn: () => fetch("/api/events").then((res) => res.json()),
   });
 
   if (isLoading) return "Loading...";
 
-  if (error) return "An error has occurred: " + error.message;
+  if (error) return "An error has occurred: " + JSON.stringify(error);
 
   return (
     <div className="myCustomHeight w-full h-full p-5" id="calendardiv">
@@ -98,9 +101,9 @@ export default function MyCalendar() {
         // startAccessor={(event: { start: string }) => {
         //   return new Date(event.start);
         // }}
-        startAccessor="start"
-        endAccessor="end"
-        onSelectEvent={(event: EventState) => handleSelectedEvent(event)}
+        //startAccessor="start"
+        //endAccessor="end"
+        onSelectEvent={(event: typeof EventState) => handleSelectedEvent(event)}
         selectable={true}
         onSelectSlot={handleSelectSlot}
         onDoubleClickEvent={handleDoubleClick}

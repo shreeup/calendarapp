@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-export function Header({ text }: { text: string }): JSX.Element {
+export function Header() {
   const router = useRouter();
   const [data, setData] = useState({
     email: "",

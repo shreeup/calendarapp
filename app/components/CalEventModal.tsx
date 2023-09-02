@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Modal from "react-modal";
 
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -17,23 +16,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import toast, { Toaster } from "react-hot-toast";
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
-
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 //Modal.setAppElement("#calendardiv");
 
 function CalEventModal() {
   //let title;
   //const [modalIsOpen, setIsOpen] = React.useState(props.modalOpen);
+  let currstate = useSelector((state: RootState) => state);
   const modalIsOpen = useSelector(
     (state: RootState) => state.calevents.modalOpen
   );
@@ -55,7 +44,7 @@ function CalEventModal() {
 
   function closeModal() {
     // setIsOpen(false);
-    dispatch(closemodal());
+    dispatch(closemodal(currstate));
   }
 
   async function submithandler() {
@@ -188,7 +177,10 @@ function CalEventModal() {
                           <DatePicker
                             selected={moment(formValues.start).toDate()}
                             onChange={(date) => {
-                              setFormValues({ ...formValues, start: date });
+                              setFormValues({
+                                ...formValues,
+                                start: date || new Date(),
+                              });
                             }}
                             showTimeSelect
                             className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
@@ -200,7 +192,10 @@ function CalEventModal() {
                           <DatePicker
                             selected={moment(formValues.end).toDate()}
                             onChange={(date) => {
-                              setFormValues({ ...formValues, end: date });
+                              setFormValues({
+                                ...formValues,
+                                end: date || new Date(),
+                              });
                             }}
                             minDate={moment(formValues.start).toDate()}
                             showTimeSelect
