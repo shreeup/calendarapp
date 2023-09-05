@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Header } from "./components/Header";
 import MyCalendar from "./components/Calendar";
-import { store } from "./reduxstore/store";
+import store from "./reduxstore/store";
 import { Provider } from "react-redux";
 
 import {

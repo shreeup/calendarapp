@@ -73,3 +73,57 @@ export async function connect() {
 export const getDateFromStr = (datestr: string): any => {
   return (moment as any)(datestr).format("YYYY-MM-DD");
 };
+
+const baseUrl = process.env.REACT_APP_API_URL;
+
+export const fetchNoToken = (
+  endpoint: string,
+  data: any,
+  method = "GET",
+  request: NextRequest
+) => {
+  const url = `${baseUrl}/${endpoint}`; // localhost:5000/api/events
+
+  if (method === "GET") {
+    return fetch(url);
+  } else {
+    return fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  }
+};
+
+export const fetchWithToken = (
+  endpoint: string,
+  data: any,
+  method = "GET",
+  request: NextRequest
+) => {
+  const url = `${baseUrl}/${endpoint}`; // localhost:5000/api/events
+  const token =
+    request.cookies.get("authtoken")?.value ||
+    request.headers.get("authorization") ||
+    "";
+
+  if (method === "GET") {
+    return fetch(url, {
+      method,
+      headers: {
+        "x-token": token,
+      },
+    });
+  } else {
+    return fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+      body: JSON.stringify(data),
+    });
+  }
+};

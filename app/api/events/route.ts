@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
       invitees,
     });
 
-    console.log("create event" + reqBody);
+    console.log("create event" + JSON.stringify(reqBody));
 
     try {
       await event.save();

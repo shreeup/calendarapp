@@ -4,12 +4,13 @@ import ReactDOM from "react-dom";
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
-import type { RootState } from "../reduxstore/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
   openmodal,
   closemodal,
   setActiveEvent,
+  eventUpdate,
+  eventAddNew,
 } from "../reduxstore/caleventsSlice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -22,27 +23,23 @@ import toast, { Toaster } from "react-hot-toast";
 function CalEventModal() {
   //let title;
   //const [modalIsOpen, setIsOpen] = React.useState(props.modalOpen);
-  let currstate = useSelector((state: RootState) => state);
-  const modalIsOpen = useSelector(
-    (state: RootState) => state.calevents.modalOpen
-  );
+  let currstate = useSelector((state) => state);
+  const modalIsOpen = currstate.modalOpen;
 
-  const activeEvent = useSelector(
-    (state: RootState) => state.calevents.activeEvent
-  );
+  const activeEvent = currstate.activeEvent;
   const [formValues, setFormValues] = useState(activeEvent);
 
   const dispatch = useDispatch();
   const cancelButtonRef = useRef(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e) => {
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.value,
     });
   };
 
-  function closeModal() {
+  function closeModal1() {
     // setIsOpen(false);
     dispatch(closemodal(currstate));
   }
@@ -50,20 +47,26 @@ function CalEventModal() {
   async function submithandler() {
     if (!isFormValid()) return;
     dispatch(setActiveEvent(formValues));
-    try {
-      const res = await fetch(`/api/events/${activeEvent._id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(activeEvent),
-      });
-    } catch (error: any) {
-      console.log("Update failed", error.message);
-      toast.error(error.message);
+    if (activeEvent && activeEvent._id) {
+      //posteventurl = `${posteventurl}/${activeEvent._id}`;
+      dispatch(eventUpdate(formValues));
+    } else {
+      dispatch(eventAddNew(formValues));
     }
+    // try {
+    //   const res = await fetch(`${posteventurl}`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(activeEvent),
+    //   });
+    // } catch (error: any) {
+    //   console.log("Update failed", error.message);
+    //   toast.error(error.message);
+    // }
 
-    closeModal();
+    closeModal1();
   }
 
   const isFormValid = () => {
@@ -95,7 +98,7 @@ function CalEventModal() {
           as="div"
           className="fixed z-10 inset-0 overflow-y-auto text-black"
           initialFocus={cancelButtonRef}
-          onClose={closeModal}
+          onClose={closeModal1}
         >
           <div
             className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block
@@ -229,7 +232,7 @@ function CalEventModal() {
                     hover:bg-gray-50 focus:outline-none focus:ring-2
                      focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0
                       sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={() => closeModal()}
+                    onClick={() => closeModal1}
                     ref={cancelButtonRef}
                   >
                     Cancel

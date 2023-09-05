@@ -8,7 +8,6 @@ import "./styles.css";
 import EventState from "../reduxstore/caleventsSlice";
 import CalEventModal from "./CalEventModal";
 
-import type { RootState } from "../reduxstore/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
   openmodal,
@@ -26,7 +25,9 @@ export default function MyCalendar() {
   const dispatch = useDispatch();
   //const [events, setEvents] = React.useState([]);
   //const { events, eventfetchstatus } = useQuery("events", fetchEvents);
-  let currstate = useSelector((state: RootState) => state);
+  let currstate = useSelector((state) => state);
+  console.log(JSON.stringify(currstate));
+  debugger;
   const [selectedEvent, setSelectedEvent] = useState({});
 
   //   useEffect(() => {
@@ -39,7 +40,7 @@ export default function MyCalendar() {
   //     });
   //   }, []);
 
-  const handleSelectedEvent = (event: typeof EventState) => {
+  const handleSelectedEvent = (event) => {
     debugger;
     setSelectedEvent(event);
     //setModalState(true);
@@ -62,10 +63,10 @@ export default function MyCalendar() {
   //     }
   //   };
 
-  const handleDoubleClick = (e: any) => {
+  const handleDoubleClick = (e) => {
     dispatch(openmodal(currstate));
   };
-  const handleSelectSlot = useCallback(({ start, end }: any) => {
+  const handleSelectSlot = useCallback(({ start, end }) => {
     dispatch(
       setActiveEvent({
         title: "",
@@ -97,13 +98,13 @@ export default function MyCalendar() {
 
       <Calendar
         localizer={localizer}
-        events={events}
+        events={events.length > 0 ? events : []}
         // startAccessor={(event: { start: string }) => {
         //   return new Date(event.start);
         // }}
         //startAccessor="start"
         //endAccessor="end"
-        onSelectEvent={(event: typeof EventState) => handleSelectedEvent(event)}
+        onSelectEvent={(event) => handleSelectedEvent(event)}
         selectable={true}
         onSelectSlot={handleSelectSlot}
         onDoubleClickEvent={handleDoubleClick}

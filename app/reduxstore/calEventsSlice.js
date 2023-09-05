@@ -1,31 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
 import moment from "moment";
 import axios from "axios";
-export type EventState = {
-  activeEvent: EventDetail;
-  modalOpen: boolean;
-};
 
-export interface EventDetail {
-  _id: string;
-  title: string;
-  description: string;
-  start: Date;
-  end: Date;
-  invitees: string[];
-}
+const nowInitial = moment().minutes(0).seconds(0).add(1, "hour");
+const nowEnd = nowInitial.clone().add(1, "hour");
 
-const initialState: EventState = {
+const initialState = {
   activeEvent: {
     _id: "",
-    title: "asdsd",
-    description: "xvvc",
-    start: moment(),
-    end: moment().add(1, "hours"),
+    title: "",
+    description: "",
+    start: nowInitial.toDate(),
+    end: nowEnd.toDate(),
     invitees: [],
-  } as EventDetail,
+  },
   modalOpen: false,
+  events: [],
 };
 
 // export const updateevent = createAsyncThunk(
@@ -47,22 +37,58 @@ export const caleventSlice = createSlice({
   name: "calevent",
   initialState,
   reducers: {
-    openmodal: (state: EventState) => {
+    openmodal: (state) => {
       return {
         ...state,
         modalOpen: true,
       };
     },
-    closemodal: (state: EventState) => {
+    closemodal: (state) => {
       return {
         ...state,
         modalOpen: false,
       };
     },
-    setActiveEvent: (state: EventState, action: PayloadAction) => {
+    setActiveEvent: (state, action) => {
       return {
         ...state,
         activeEvent: action.payload,
+      };
+    },
+    eventLoaded: (state, action) => {
+      return {
+        ...state,
+        activeEvent: action.payload,
+      };
+    },
+    eventAddNew: (state, action) => {
+      return {
+        ...state,
+        events: [...state.events, action.payload],
+      };
+    },
+    eventUpdate: (state, action) => {
+      return {
+        ...state,
+        events: state.events.map((event) =>
+          event._id === action.payload._id ? action.payload : event
+        ),
+      };
+    },
+    eventDelete: (state, action) => {
+      return {
+        ...state,
+        events: state.events.filter(
+          (event) => event._id !== state.activeEvent._id
+        ),
+        activeEvent: {
+          _id: "",
+          title: "",
+          description: "",
+          start: nowInitial.toDate(),
+          end: nowEnd.toDate(),
+          invitees: [],
+        },
       };
     },
   },
@@ -78,6 +104,14 @@ export const caleventSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { openmodal, closemodal, setActiveEvent } = caleventSlice.actions;
+export const {
+  openmodal,
+  closemodal,
+  setActiveEvent,
+  eventLoaded,
+  eventAddNew,
+  eventUpdate,
+  eventDelete,
+} = caleventSlice.actions;
 
 export default caleventSlice.reducer;
